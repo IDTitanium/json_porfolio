@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JSON Viewer</title>
+  <style>
+    body {
+        background-color: black;
+        font-size: 18px;
+        color: blue;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    .row {
+      margin-left: 20px;
+      white-space: pre-wrap;
+    }
+    .toggle:before {
+      content: "✅";
+      display: inline-block;
+      width: 20px;
+      cursor: pointer;
+    }
+    .collapsed .toggle:before {
+      content: "⏬";
+    }
+    .nested-row {
+      display: none;
+    }
+    .key {
+      text-transform: capitalize;
+      color: #cb4154;
+    }
+    .value {
+      color: #e3e3e3;
+      /* word-break: break-all; */
+      /* overflow-wrap: break-word; */
+    }
+  </style>
+</head>
+<body>
+    <div style="overflow-wrap: break-word;margin: 0 auto;
+    max-width: 100%;
+    border: solid 2px #ccc;
+    padding: 40px;
+    overflow-wrap: break-word;">
+        <a href="mailto:idriseun222@gmail.com" target="_blank" style="padding: 10px;"><button>Send Me An Email ✉️</button></a>
+        <a href="https://github.com/IDTitanium" target="_blank" style="padding: 10px;"><button>Check My Github profile 💻</button></a>
+        <a href="https://linkedin.com/in/lawal-idris-oluwaseun" target="_blank" style="padding: 10px;"><button>Check My Linkedin 👀</button></a>
+        <div style="padding: 10px;color:#e3e3e3">version 1.0.0</div>
+        <pre id="json-data"></pre>
+    </div>
+
+  <script>
+    function createRow(key, value, parentElement) {
+      var row = document.createElement("div");
+      row.classList.add("row");
+
+      var hasChildren = typeof value === "object";
+
+      if (hasChildren) {
+        var toggleElement = document.createElement("span");
+        toggleElement.classList.add("toggle");
+        row.appendChild(toggleElement);
+        toggleElement.addEventListener("click", function() {
+          row.classList.toggle("collapsed");
+          nestedRow.style.display = row.classList.contains("collapsed") ? "none" : "block";
+        });
+      }
+
+      var keyElement = document.createElement("span");
+      keyElement.classList.add("key");
+      if (Number(key) >= 0) {
+        keyElement.textContent = `  👉🏾 `;
+      } else {
+        if (key == "responsibilities") {
+            keyElement.textContent = `  "${key}" 👔 : `;
+        } else {
+            keyElement.textContent = `  "${key}" 😌 : `;
+        }
+      }
+    //   keyElement.textContent = key + ": ";
+      row.appendChild(keyElement);
+
+      var valueElement = document.createElement("span");
+      valueElement.classList.add("value");
+      if (hasChildren) {
+        valueElement.textContent = " ";
+      } else {
+        valueElement.textContent = `"${value}"`;
+      }
+      row.appendChild(valueElement);
+
+      parentElement.appendChild(row);
+
+      if (hasChildren) {
+        var nestedRow = document.createElement("div");
+        nestedRow.classList.add("nested-row");
+        parentElement.appendChild(nestedRow);
+
+        // Create child rows and immediately display them
+        for (var childKey in value) {
+          createRow(childKey, value[childKey], nestedRow);
+        }
+
+        // Expand the row by default
+        row.classList.remove("collapsed");
+        nestedRow.style.display = "block";
+      }
+    }
+
+    function renderJSON(json) {
+      var jsonData = JSON.parse(json);
+      var container = document.getElementById("json-data");
+      container.innerHTML = "";
+      createRow("", jsonData, container);
+    }
+
+    // Example JSON data
+    var exampleJSON = '{"name":"Idris Lawal","title":"Software Engineer","phone":"+2349018063510","email":"idriseun222@gmail.com","linkedin":"www.linkedin.com/in/lawal-idris-oluwaseun","github":"www.github.com/idtitanium","summary":"Full-stack software engineer with 4 years of experience building SaSS applications on the web in a team of more than 5 engineers. With a focus on backend development and cloud architectures.","experience":[{"title":"Backend Engineer","company":"Reliance Health","startDate":"Jul 2022","endDate":"Present","responsibilities":["Developing a highly scalable, low-latency API for service delivery for a healthcare admin system.","Providing high-quality APIs for 2 mobile engineers and a frontend engineer in a team of 4.","Managing server deployments and database using Laravel Forge.","Designing robust database schemas to support large data and customer base.","Implementing authentication and authorization mechanisms for secure access to the API endpoints.","Optimizing API performance and response times through caching and query optimization techniques.","Collaborating with the frontend team to design and implement API contracts for seamless integration.","Participating in code reviews and providing constructive feedback to ensure code quality and adherence to best practices.","Troubleshooting and resolving complex technical issues to ensure smooth operation of the healthcare admin system.","Keeping up-to-date with industry trends and technologies to suggest improvements and innovative solutions."]},{"title":"Senior Software Engineer","company":"Kloud Commerce","startDate":"May 2021","endDate":"Aug 2022","responsibilities":["Building inventory management systems that helped retail clients manage their inventory; systems used by retailers with up to 10 inventory locations.","Creating highly available and scalable services as part of a headless commerce architecture comprising 5 microservices for customers with up to 20 inventory locations.","Modeling API endpoints for highly available systems integrations between local on-prem devices and the cloud inventory systems, giving clients a 100% offline to online presence.","Provisioning features for inventory count and receiving with the ability to handle more than one thousand inventory product update requests at a time.","Delivering key features of inventory systems thereby helping the team achieve its goals of zero churn of important clients.","Providing guidance and assistance to Juniors and Interns in a team of 4.","Implementing units and features tests for backend APIs and client-facing frontend applications and achieving 80% code coverage across the app.","Implementing APIs that interact with a custom-built WooCommerce plugin."]},{"title":"Software Engineer","company":"Gloopro","startDate":"July 2019","endDate":"May 2021","responsibilities":["Engaging in developing the company’s e-commerce and inventory SaSS solution alongside team members in a team of 10.","Reviewing code of all 5 engineers on the team at different stages during the product development.","Writing software design and architecture documentation in project planning sessions in a team of 5.","Achieving 100% API documentation of all features fashioned and existing legacy features.","Carrying out feature testing of applications with at least an 80% code coverage on features delivered.","Collaborating with stakeholders to gather requirements and understanding business needs for the e-commerce and inventory SaSS solution.","Designing and implementing new features and functionality for the SaSS solution based on user feedback and market trends.","Conducting regular code refactoring to improve the maintainability and readability of the codebase.","Participating in system design discussions and providing input on technical feasibility and scalability.","Conducting performance profiling and optimization to enhance the speed and efficiency of the e-commerce and inventory SaSS solution.","Implementing security measures and best practices to ensure the protection of customer data and sensitive information.","Mentoring and providing technical guidance to junior developers to foster their professional growth and improve overall team performance.","Collaborating with the DevOps team to ensure smooth deployment and continuous integration of the software.","Participating in sprint retrospectives to identify areas for improvement and suggest process enhancements.","Conducting user acceptance testing (UAT) to validate the functionality and usability of the e-commerce and inventory SaSS solution.","Assisting in troubleshooting and resolving production issues to minimize downtime and ensure high availability.","Staying up-to-date with the latest industry trends, technologies, and frameworks to bring innovative solutions to the team.","Collaborating with the UI/UX team to ensure a seamless and intuitive user experience in the e-commerce platform.","Creating and maintaining technical documentation, such as user manuals and developer guides, to facilitate product understanding and onboarding.","Participating in regular product roadmap discussions to contribute ideas and suggestions for future enhancements and features."]}]}';
+
+    // Render example JSON data
+    renderJSON(exampleJSON);
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
